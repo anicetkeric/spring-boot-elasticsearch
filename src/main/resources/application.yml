@@ -1,0 +1,7 @@
+spring:
+  data:
+    elasticsearch:
+      cluster-name: docker-cluster
+      cluster-nodes: http://localhost:9200
+      rest:
+        uris: http://localhost:9200
