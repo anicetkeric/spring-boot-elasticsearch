@@ -7,9 +7,10 @@ import com.boottech.springbootelasticsearch.service.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -23,7 +24,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getAll() {
-        return (List<Book>) repository.findAll();
+        return StreamSupport.stream(
+                        Spliterators.spliteratorUnknownSize(repository.findAll().iterator(), 0), false)
+                .toList();
     }
 
     @Override
@@ -39,18 +42,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book update(Book book, String id) {
-    /*    return repository.findById(UUID.fromString(id))
-            .flatMap(book1 -> {
-                book1.setTitle(book.getTitle());
-                book1.setIsbn(book.getIsbn());
-                book1.setDescription(book.getDescription());
-                book1.setLanguage(book.getLanguage());
-                book1.setPage(book.getPage());
-                book1.setPrice(book.getPrice());
-                book1.setPublication(book.getPublication());
-                return repository.save(book1);
-            });*/
-        return null;
+         repository.findById(id)
+                .ifPresentOrElse(book1 -> {
+                    book1.setTitle(book.getTitle());
+                    book1.setIsbn(book.getIsbn());
+                    book1.setDescription(book.getDescription());
+                    book1.setLanguage(book.getLanguage());
+                    book1.setPage(book.getPage());
+                    book1.setPrice(book.getPrice());
+                    repository.save(book1);
+                },() -> {throw new DataNotFoundException("Book id not found");});
+
+        return book;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.boottech.springbootelasticsearch.service.impl;
 
 import com.boottech.springbootelasticsearch.domain.Author;
-import com.boottech.springbootelasticsearch.domain.Book;
 import com.boottech.springbootelasticsearch.exception.DataNotFoundException;
 import com.boottech.springbootelasticsearch.repository.AuthorRepository;
 import com.boottech.springbootelasticsearch.service.AuthorService;
@@ -9,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -23,7 +23,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<Author> getAll() {
-        return  (List<Author>) repository.findAll();
+        return StreamSupport.stream(
+                        Spliterators.spliteratorUnknownSize(repository.findAll().iterator(), 0), false)
+                .toList();
     }
 
     @Override
@@ -39,14 +41,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author update(Author author, String id) {
-     /*   return repository.findById(UUID.fromString(id))
-            .flatMap(author1 -> {
-                author1.setFirstname(author.getFirstname());
-                author1.setLastname(author.getLastname());
-                author1.setMiddleName(author.getMiddleName());
-                return repository.save(author1);
-            });*/
-        return null;
+        repository.findById(id)
+                .ifPresentOrElse(author1 -> {
+                    author1.setFirstname(author.getFirstname());
+                    author1.setLastname(author.getLastname());
+                    author1.setMiddleName(author.getMiddleName());
+                    repository.save(author1);
+                },() -> {throw new DataNotFoundException("Author id not found");});
+
+        return author;
     }
 
     @Override

@@ -34,8 +34,6 @@ public class Book {
     @Field(type = FieldType.Text, name = "title")
     private String language;
 
-   // private LocalDate publication;
-
     @Field(type = FieldType.Double, name = "price")
     private Double price;
 }
