@@ -25,13 +25,13 @@ public class Book {
     @Field(type = FieldType.Integer, name = "page")
     private Integer page;
 
-    @Field(type = FieldType.Text, name = "title")
+    @Field(type = FieldType.Text, name = "isbn")
     private String isbn;
 
-    @Field(type = FieldType.Text, name = "title")
+    @Field(type = FieldType.Text, name = "description")
     private String description;
 
-    @Field(type = FieldType.Text, name = "title")
+    @Field(type = FieldType.Text, name = "language")
     private String language;
 
     @Field(type = FieldType.Double, name = "price")

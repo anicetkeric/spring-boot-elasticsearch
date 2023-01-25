@@ -22,21 +22,9 @@ public class AuthorController {
     }
 
     @GetMapping("/author")
-    public List<Author> getAllAuthors() {
-        return authorService.getAll();
+    public ResponseEntity<List<Author>> getAllAuthors() {
+        return ResponseEntity.ok().body(authorService.getAll());
     }
-
-/*
-    @GetMapping("/author/{id}")
-    public ResponseEntity<Author> getAuthorById(@PathVariable("id") String id) {
-
-        return authorService.getById(id)
-            .map(author1 -> ResponseEntity.ok()
-                .body(author1))
-            .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()))
-            .log();
-    }
-*/
 
     @PostMapping("/author")
     @ResponseStatus(HttpStatus.CREATED)
@@ -45,26 +33,25 @@ public class AuthorController {
 
     }
 
-/*
-    @PutMapping("/author/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Mono<ResponseEntity<Author>> updateAuthor(@RequestBody Author author, @PathVariable String id) {
-
-        var updatedAuthorMono =  authorService.update(author, id);
-        return updatedAuthorMono
-            .map(author1 -> ResponseEntity.ok()
-                .body(author1))
-            .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
-
-    }
-*/
-
     @DeleteMapping("/author/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deleteAuthorById(@PathVariable String id){
-         authorService.deleteById(id);
+        authorService.deleteById(id);
 
         return ResponseEntity.ok().body("Done");
     }
 
+    @GetMapping("/author/{id}")
+    public ResponseEntity<Author> getAuthorById(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(authorService.getById(id));
+    }
+
+
+    @PutMapping("/author/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Author> updateAuthor(@RequestBody Author author, @PathVariable String id) {
+        var updatedAuthor =  authorService.update(author, id);
+        return ResponseEntity.ok().body(updatedAuthor);
+
+    }
 }
